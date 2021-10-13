@@ -1,0 +1,58 @@
+ #include <LiquidCrystal.h>
+  LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
+  const int buzzer = 7; 
+  int sensor_Input;
+  float temp;
+      
+  void setup() {
+  
+    Serial.begin(9600);
+    lcd.begin(16, 2);
+    pinMode(buzzer, OUTPUT);
+    pinMode(3, OUTPUT);
+    pinMode(5, OUTPUT);
+    pinMode(6, OUTPUT);
+  }
+  void loop() {
+  
+    measure_Temp();
+    display_Temp();
+    if (temp >= 40){
+     lcd.clear();
+     lcd.setCursor(2, 0);
+     lcd.print("TOO HOT");
+     delay(1000);
+     tone(buzzer, 250, 1000);  
+     delay(1000);	
+     analogWrite(3, 0);
+     analogWrite(5, 0);
+     analogWrite(6, 225);
+    }else{
+      analogWrite(3, 225);
+      analogWrite(5, 0);
+      analogWrite(6, 0);}
+      
+ }
+  
+  void measure_Temp()
+  {
+    sensor_Input = analogRead(A0);
+    temp = (float)sensor_Input / 1024;
+    temp = temp * 5;
+    temp = temp - 0.5;
+    temp = temp * 100;
+  }
+  
+  void display_Temp()
+  {
+    lcd.setCursor(0, 0);
+    Serial.print("Temp. in Celcius: ");
+    Serial.print(temp);
+    Serial.println();
+    lcd.print("Temp. in Celcius: ");
+    lcd.setCursor(5, 1);
+    lcd.print(temp);
+    delay(500);
+  }
+  
+  *for tinkercad
